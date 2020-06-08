@@ -1,5 +1,3 @@
-# BADGE
-
 [![Build Status](http://3.236.56.62/buildStatus/icon?job=student-list)](http://3.236.56.62/job/student-list/)
 
 # Description
