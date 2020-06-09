@@ -5,7 +5,7 @@ pipeline {
             agent { docker { image 'koalaman/shellcheck-alpine:stable' } }
             steps {
                 sh 'shellcheck --version'
-                sh 'apk --no-cache add grep'
+                sh 'sudo apk --no-cache add grep'
                 sh '''
                 for file in $(grep -IRl "#!(/usr/bin/env |/bin/)" --exclude-dir ".git" --exclude Jenkinsfile \${WORKSPACE}); do
                   if ! shellcheck -x $file; then
