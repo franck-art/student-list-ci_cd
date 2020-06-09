@@ -2,7 +2,7 @@ pipeline {
     agent none
     stages {
         stage('Check bash syntax') {
-            agent { docker { image 'koalaman/shellcheck-alpine:stable' } }
+            agent { docker { image 'koalaman/shellcheck-alpine:latest' } }
             steps {
                 sh 'shellcheck --version'
                 sh 'apk -u root --no-cache add grep'
