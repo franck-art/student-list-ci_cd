@@ -27,7 +27,7 @@ pipeline {
                 sh 'yamllint \${WORKSPACE}'
             }
         }
-        stage('Check markdown syntax') {
+         stage('Check markdown syntax') {
             agent { docker { image 'ruby:alpine' } }
             steps {
                 sh 'apk --no-cache add git'
@@ -36,7 +36,7 @@ pipeline {
                 sh 'mdl --style all --warnings --git-recurse \${WORKSPACE}'
             }
         }
-        stage('Prepare ansible environment') {
+         stage('Prepare ansible environment') {
             agent any
             environment {
                 VAULTKEY = credentials('vaultkey')
@@ -48,7 +48,7 @@ pipeline {
                 sh 'chmod 600 id_rsa'
             }
         }
-        stage('Test and deploy the application') {
+         stage('Test and deploy the application') {
             agent { docker { image 'registry.gitlab.com/robconnolly/docker-ansible:latest' } }
             stages {
                stage("Install ansible role dependencies") {
@@ -56,12 +56,12 @@ pipeline {
                        sh 'ansible-galaxy install -r roles/requirements.yml'
                    }
                }
-               stage("Ping targeted hosts") {
+                stage("Ping targeted hosts") {
                    steps {
                        sh 'ansible all -m ping -i hosts --private-key id_rsa'
                    }
                }
-               stage("Vérify ansible playbook syntax") {
+                 stage("Vérify ansible playbook syntax") {
                    steps {
                        sh 'ansible-lint -x 306 install_student_list.yml'
                        sh 'echo "${GIT_BRANCH}"'
@@ -87,4 +87,5 @@ pipeline {
         }
     }
 }
+
 
