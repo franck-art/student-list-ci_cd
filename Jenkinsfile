@@ -5,7 +5,7 @@ pipeline {
             agent { docker { image 'koalaman/shellcheck-alpine:stable' } }
             steps {
                 sh 'shellcheck --version'
-                sh 'sudo apk --no-cache add grep'
+                sh 'apk --no-cache add grep'
                 sh '''
                 for file in $(grep -IRl "#!(/usr/bin/env |/bin/)" --exclude-dir ".git" --exclude Jenkinsfile \${WORKSPACE}); do
                   if ! shellcheck -x $file; then
@@ -35,7 +35,7 @@ pipeline {
                 sh 'mdl --version'
                 sh 'mdl --style all --warnings --git-recurse \${WORKSPACE}'
             }
-        }
+         }
          stage('Prepare ansible environment') {
             agent any
             environment {
@@ -47,7 +47,7 @@ pipeline {
                 sh 'cp \$DEVOPSKEY id_rsa'
                 sh 'chmod 600 id_rsa'
             }
-        }
+         }
          stage('Test and deploy the application') {
             agent { docker { image 'registry.gitlab.com/robconnolly/docker-ansible:latest' } }
             stages {
@@ -60,17 +60,17 @@ pipeline {
                    steps {
                        sh 'ansible all -m ping -i hosts --private-key id_rsa'
                    }
-               }
+                }
                  stage("Vérify ansible playbook syntax") {
                    steps {
                        sh 'ansible-lint -x 306 install_student_list.yml'
                        sh 'echo "${GIT_BRANCH}"'
                    }
-               }
+                 } 
                stage("Build docker images on build host") {
                    when {
                       expression { GIT_BRANCH == 'origin/master' }
-                  }
+                   }
                    steps {
                        sh 'ansible-playbook  -i hosts --vault-password-file vault.key --private-key id_rsa --tags "build" --limit build install_student_list.yml'
                    }
@@ -84,7 +84,7 @@ pipeline {
                    }
                }
             }
-        }
+         }
     }
 }
 
