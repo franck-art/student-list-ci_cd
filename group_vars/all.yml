@@ -1,6 +1,6 @@
 ---
 
-student_list_source_repo: "git@github.com:franck-art/student-list-jenkins_CD.git"
+student_list_source_repo: "git@github.com:franck-art/student-list-dockerhub_CI.git"
 student_list_source_branch: "master"
 
 student_list_docker_image_tag: "v1"
