@@ -1,10 +1,9 @@
 # BADGE
 
-[![Build Status](http://3.236.56.62/buildStatus/icon?job=student-list)](http://3.236.56.62/job/student-list/)
+[![Build Status](http://3.229.137.228/buildStatus/icon?job=fake-backend-jenkins_CD)](http://3.229.137.228/job/fake-backend-jenkins_CD/)
 
 ## Description
 
 This repository is used to demonstrate how to use Jenkinsfile to build pipeline
 
-by Dirane TAFEN (diranetafen@yahoo.com)
-AN EAZYTRAINING Training Company
+by Franck Junior TCHOUNZOU
