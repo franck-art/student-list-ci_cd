@@ -1,5 +1,5 @@
 // import shared library 
-// @Library('jenkins-shared-library') _
+@Library('jenkins-shared-library') _
 
 
 pipeline {
@@ -8,9 +8,7 @@ pipeline {
         stage('Check bash syntax') {
             agent { docker { image 'koalaman/shellcheck-alpine:latest' } }
             steps {
-
               script { syntaxChecking.bashCheck }
-
             }
         }
         stage('Check yaml syntax') {
