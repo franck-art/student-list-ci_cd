@@ -7,19 +7,19 @@ pipeline {
         stage('Check bash syntax') {
             agent { docker { image 'koalaman/shellcheck-alpine:latest' } }
             steps {
-             script { syntaxChecking }
+             script { bashCheck }
             }
         }
         stage('Check yaml syntax') {
             agent { docker { image 'sdesbure/yamllint' } }
             steps {
-              script { syntaxChecking.yamlCheck }
+              script { yamlCheck }
             }
         }
          stage('Check markdown syntax') {
             agent { docker { image 'ruby:alpine' } }
             steps {
-              script { syntaxChecking.markdownCheck }
+              script { markdownCheck }
             }
          }
          stage('Prepare ansible environment') {
