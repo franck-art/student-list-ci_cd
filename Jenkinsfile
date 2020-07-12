@@ -1,39 +1,25 @@
+// import shared library 
+@Library('jenkins-shared-library') _
+
 pipeline {
     agent none
     stages {
         stage('Check bash syntax') {
             agent { docker { image 'koalaman/shellcheck-alpine:latest' } }
             steps {
-                sh 'shellcheck --version'
-                sh 'apk  --no-cache add grep'
-                sh '''
-                for file in $(grep -IRl "#!(/usr/bin/env |/bin/)" --exclude-dir ".git" --exclude Jenkinsfile \${WORKSPACE}); do
-                  if ! shellcheck -x $file; then
-                    export FAILED=1
-                  else
-                    echo "$file OK"
-                  fi
-                done
-                if [ "${FAILED}" = "1" ]; then
-                  exit 1
-                fi
-                '''
+             script { bashCheck }
             }
         }
         stage('Check yaml syntax') {
             agent { docker { image 'sdesbure/yamllint' } }
             steps {
-                sh 'yamllint --version'
-                sh 'yamllint \${WORKSPACE}'
+              script { yamlCheck }
             }
         }
          stage('Check markdown syntax') {
             agent { docker { image 'ruby:alpine' } }
             steps {
-                sh 'apk --no-cache add git'
-                sh 'gem install mdl'
-                sh 'mdl --version'
-                sh 'mdl --style all --warnings --git-recurse \${WORKSPACE}'
+              script { markdownCheck }
             }
          }
          stage('Prepare ansible environment') {
@@ -75,6 +61,25 @@ pipeline {
                        sh 'ansible-playbook  -i hosts --vault-password-file vault.key --private-key id_rsa --tags "build" --limit build install_student_list.yml'
                    }
                }
+               stage("Scan docker images on build host") {
+                   when {
+                      expression { GIT_BRANCH == 'origin/master' }
+                  }
+                   steps {
+                       sh 'ansible-playbook  -i hosts --vault-password-file vault.key --private-key id_rsa clair-scan.yml'
+                   }
+               }
+
+              
+               stage("Push docker images from build host") {
+                   when {
+                      expression { GIT_BRANCH == 'origin/master' }
+                  }
+                   steps {
+                       sh 'ansible-playbook  -i hosts --vault-password-file vault.key --private-key id_rsa --tags "push" --limit build install_student_list.yml'
+                   }
+               }
+
                stage("Deploy app in production") {
                     when {
                        expression { GIT_BRANCH == 'origin/master' }
@@ -87,14 +92,15 @@ pipeline {
          }
     }
     post {
-       success {
-         slackSend (color: '#00FF00', message: "SUCCESSFUL: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-         }
-      failure {
-            slackSend (color: '#FF0000', message: "FAILED: Job '${env.JOB_NAME} [${env.BUILD_NUMBER}]' (${env.BUILD_URL})")
-          }   
+     always {
+       script {
+         // Use slackNotifier.groovy from shared library and provide current build result as parameter 
+
+         clean
+         slackNotifier currentBuild.result
+     }
     }
 
 }
 
-
+}
