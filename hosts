@@ -1,9 +1,16 @@
 [build]
 #localhost ansible_connection=local
+<<<<<<< HEAD
 172.31.41.231  ansible_user=centos ansible_ssh_common_args='-o StrictHostKeyChecking=no'
 
 [prod]
 172.31.47.163  ansible_user=centos ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+=======
+172.31.37.139  ansible_user=centos ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+
+[prod]
+172.31.33.94  ansible_user=centos ansible_ssh_common_args='-o StrictHostKeyChecking=no'
+>>>>>>> 9d255f69de31641c2cfce814860587f5a934ef06
 
 #[all:children]
 #prod
