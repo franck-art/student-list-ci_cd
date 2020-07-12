@@ -75,6 +75,25 @@ pipeline {
                        sh 'ansible-playbook  -i hosts --vault-password-file vault.key --private-key id_rsa --tags "build" --limit build install_student_list.yml'
                    }
                }
+               stage("Scan docker images on build host") {
+                   when {
+                      expression { GIT_BRANCH == 'origin/master' }
+                  }
+                   steps {
+                       sh 'ansible-playbook  -i hosts --vault-password-file vault.key --private-key id_rsa clair-scan.yml'
+                   }
+               }
+
+              
+               stage("Push docker images from build host") {
+                   when {
+                      expression { GIT_BRANCH == 'origin/master' }
+                  }
+                   steps {
+                       sh 'ansible-playbook  -i hosts --vault-password-file vault.key --private-key id_rsa --tags "push" --limit build install_student_list.yml'
+                   }
+               }
+
                stage("Deploy app in production") {
                     when {
                        expression { GIT_BRANCH == 'origin/master' }
