@@ -99,7 +99,7 @@ pipeline {
                       sh 'gauntlt --version'
                      sh 'gauntlt xss.attack'
                    }
-        }
+              }
 
     }
     post {
